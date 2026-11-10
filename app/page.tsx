@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 /* ========================================================================== */
 /*  Global keyframes + helpers                                                */
@@ -256,6 +257,11 @@ function CtaButton({
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);  
+  const router = useRouter()
+  const {data: session, status} = useSession()
+  if(status == 'authenticated'){
+    router.push(`${process.env.NEXTAUTH_URL}/dashboard`)
+  }
 
   useEffect(() => {
     const onScroll = () => {
