@@ -20,6 +20,21 @@ import {
 import AnalysisCard from "@/components/AnalysisCard";
 import RepositoryContainer from "@/components/RepositoryContainer";
 
+type GitHubRepository = {
+  id: number;
+  name: string;
+  description: string | null;
+  default_branch: string;
+  owner: {
+    login: string;
+  };
+};
+
+type AnalyzedRepository = {
+  githubId: string | number;
+  updatedAt: string | Date;
+};
+
 export default function RepositoryDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -29,10 +44,12 @@ export default function RepositoryDashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [activeRepoName, setActiveRepoName] = useState("");
   const [loadingItemId, setLoadingItemId] = useState("");
-  const [repositories, setRepositories] = useState<any[]>([]);
   const [loadingRepos, setLoadingRepos] = useState(true);
   const [progressMessageIndex, setProgressMessageIndex] = useState(0);
-  const [allAnalyzedRepoIds, setAllAnalyzedRepoIds] = useState([]);
+  const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
+  const [allAnalyzedRepoIds, setAllAnalyzedRepoIds] = useState<
+    AnalyzedRepository[]
+  >([]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -265,13 +282,13 @@ export default function RepositoryDashboard() {
               {filteredRepos.length} repositories
             </p>
           </div>
-          
+
           <div className="flex items-center gap-2">
             {loadingItemId && <Loader2 className="animate-spin" />}
-            {user?.isGithubConnected ? (
+            {status === "authenticated" ? (
               <div className="hidden items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/70 px-3 py-1.5 text-xs text-zinc-400 sm:flex">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                GitHub connected
+                GitHub signed in
               </div>
             ) : (
               <div className="hidden items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/70 px-3 py-1.5 text-xs text-zinc-400 sm:flex">

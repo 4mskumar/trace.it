@@ -1,16 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { FiGithub } from "react-icons/fi";
-import {
-  Loader2,
-  Search,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-} from "lucide-react";
+import { Loader2, Search, ArrowRight, CheckCircle2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import type { Dispatch, SetStateAction } from "react";
+
+type GitHubRepository = {
+  id: number;
+  name: string;
+  description: string | null;
+  default_branch: string;
+  owner: {
+    login: string;
+  };
+};
+
+type AnalyzedRepository = {
+  githubId: string | number;
+  updatedAt: string | Date;
+};
+
+type RepositoryContainerProps = {
+  repositories: GitHubRepository[];
+  isAnalyzing: boolean;
+  filteredRepos: GitHubRepository[];
+  currentRepos: GitHubRepository[];
+  loadingItemId: string;
+  setLoadingItemId: Dispatch<SetStateAction<string>>;
+  setActiveRepoName: Dispatch<SetStateAction<string>>;
+  allAnalyzedRepoIds?: AnalyzedRepository[];
+};
 
 const RepositoryContainer = ({
   repositories,
@@ -21,13 +42,13 @@ const RepositoryContainer = ({
   setLoadingItemId,
   setActiveRepoName,
   allAnalyzedRepoIds = [],
-}) => {
+}: RepositoryContainerProps) => {
   const router = useRouter();
 
   async function handleRepositoryAnalyze(
     owner: string,
     repoName: string,
-    id: string,
+    id: string | number,
   ) {
     if (isAnalyzing) return;
 
@@ -36,7 +57,7 @@ const RepositoryContainer = ({
       return;
     }
 
-    setLoadingItemId(id);
+    setLoadingItemId(String(id));
     setActiveRepoName(repoName);
 
     try {
@@ -71,7 +92,6 @@ const RepositoryContainer = ({
       setActiveRepoName("");
     }
   }
-  
 
   return (
     <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30">
@@ -128,16 +148,14 @@ const RepositoryContainer = ({
 
           {/* Repository rows */}
           {currentRepos.map((repo) => {
-            const isCurrentRepo = loadingItemId === repo.id;
+            const isCurrentRepo = loadingItemId === String(repo.id);
 
             // Find matching analyzed record from DB data
             const analyzedRecord = allAnalyzedRepoIds.find(
-              (item) => String(item.githubId) === String(repo.id)
+              (item) => String(item.githubId) === String(repo.id),
             );
-            
+
             const isAnalyzed = Boolean(analyzedRecord);
-            
-            
 
             // Format updatedAt date if available
             const formattedDate = analyzedRecord?.updatedAt
@@ -214,19 +232,15 @@ const RepositoryContainer = ({
                 <div className="md:col-span-3 md:text-right">
                   <Button
                     onClick={() =>
-                      handleRepositoryAnalyze(
-                        ownerLogin,
-                        repoName,
-                        repo.id,
-                      )
+                      handleRepositoryAnalyze(ownerLogin, repoName, repo.id)
                     }
                     disabled={isAnalyzing}
                     className={`h-9 cursor-pointer w-full gap-2 text-xs font-semibold transition-all md:w-auto ${
                       isCurrentRepo
                         ? "bg-emerald-600 text-white"
                         : isAnalyzed
-                        ? "bg-zinc-800 text-zinc-200 hover:bg-zinc-700 hover:text-white border border-zinc-700"
-                        : "bg-zinc-100 text-zinc-950 hover:bg-emerald-800 hover:text-white"
+                          ? "bg-zinc-800 text-zinc-200 hover:bg-zinc-700 hover:text-white border border-zinc-700"
+                          : "bg-zinc-100 text-zinc-950 hover:bg-emerald-800 hover:text-white"
                     } disabled:cursor-not-allowed disabled:opacity-40`}
                   >
                     {isCurrentRepo ? (
@@ -242,7 +256,7 @@ const RepositoryContainer = ({
                     ) : (
                       <>
                         Analyze
-                        <ArrowRight className="h-3.5 w-3.5" />                        
+                        <ArrowRight className="h-3.5 w-3.5" />
                       </>
                     )}
                   </Button>

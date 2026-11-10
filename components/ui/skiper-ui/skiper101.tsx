@@ -74,7 +74,7 @@ function TooltipContent({
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow render={<span />}><ArrowSvg /></TooltipPrimitive.Arrow>
+        <TooltipPrimitive.Arrow className="fill-background" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );
