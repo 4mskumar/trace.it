@@ -75,8 +75,8 @@ export const LeftSidebar = () => {
               render={<Link href="/" />}
               className="hover:bg-zinc-900 hover:text-white"
             >
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-zinc-800 text-sm font-bold text-white hover:text-emerald-400 duration-150 hover:scale-110 transition-all">
-                T
+              <div className="flex  shrink-0 items-center justify-center rounded-md  text-sm font-bold">
+                <Image src={'/favicon.ico'} width={50} height={50} alt="title logo" />
               </div>
               {/* <Image src={'/images/white logo.png'} height={300} className="w-[25%]" width={1000} alt="trace logo" /> */}
               <h1 className="text-2xl tracking-tight">
@@ -172,6 +172,9 @@ export const LeftSidebar = () => {
                       </p>
                       <p className="truncate text-xs text-zinc-500">
                         {user.email}
+                      </p>
+                      <p className="text-xs text-zinc-400 tracking-tight hover:text-zinc-300 hover:border-zinc-400 duration-150 cursor-pointer border rounded-full px-3 py-1 w-fit mt-3">
+                        You're on a free trial.
                       </p>
                     </DropdownMenuLabel>
                   </DropdownMenuGroup>

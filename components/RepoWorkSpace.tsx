@@ -86,7 +86,6 @@ export default function RepoWorkspace({
   repositoryId,
 }: RepoWorkspaceProps) {
   /* ------------------------------- Chat state ----------------------------- */
-  console.log(repositoryId);
   
 
   const [chats, setChats] = useState<ChatSummary[]>([]);
@@ -198,7 +197,6 @@ export default function RepoWorkspace({
     }
 
     setActiveChatId(data.chat.id);
-    console.log('create chat ', data);
     
 
     return data.chat.id as string;

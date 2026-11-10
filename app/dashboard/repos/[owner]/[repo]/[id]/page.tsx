@@ -12,7 +12,6 @@ export default async function RepositoryPage({
   params,
 }: RepositoryPageProps) {
   const { owner, repo, id } = await params;
-  console.log(id);
   
   return (
     <RepoWorkspace owner={owner} repo={repo} repositoryId={id} />
